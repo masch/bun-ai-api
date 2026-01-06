@@ -1,15 +1,75 @@
-# bun-ai-api
+# 🚀 Bun AI API Proxy
 
-To install dependencies:
+A high-performance, streaming-first AI API proxy built with [Bun](https://bun.sh). It provides a unified `/chat` interface and automatically rotates through multiple AI providers using a round-robin strategy.
+
+## ✨ Features
+
+- ⚡ **Ultra-Fast**: Powered by Bun's native server and high-speed runtime.
+- 🔄 **Smart Rotation**: Automatically rotates between providers (Groq, Cerebras, Gemini) on every request.
+- 🌊 **Real-time Streaming**: Full support for Server-Sent Events (SSE) for low-latency responses.
+- 🛠️ **Unified API**: Send one standard request format, and the proxy handles provider-specific implementation details.
+
+## 🤖 Supported Models
+
+| Provider | Model |
+| :--- | :--- |
+| **Google** | `gemini-3-flash-preview` |
+| **Groq** | `moonshotai/kimi-k2-instruct-0905` |
+| **Cerebras** | `zai-glm-4.6` |
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
 
 ```bash
 bun install
 ```
 
-To run:
+### 2. Configure Environment
+
+Copy the example environment file and add your API keys:
 
 ```bash
-bun run index.ts
+cp .env.example .env
 ```
 
-This project was created using `bun init` in bun v1.3.3. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+Edit `.env`:
+```env
+GROQ_API_KEY=your_groq_key
+CEREBRAS_API_KEY=your_cerebras_key
+GEMINI_API_KEY=your_gemini_key
+```
+
+### 3. Start the Server
+
+```bash
+bun run dev
+```
+The server will start on `http://localhost:3000`.
+
+## 📡 Usage
+
+### Chat Endpoint
+**POST** `/chat`
+
+Example request using `curl`:
+
+```bash
+curl -N -X POST http://localhost:3000/chat \
+     -H "Content-Type: application/json" \
+     -d '{"messages": [{"role": "user", "content": "Hello! Can you tell me your AI model name and version?"}]}'
+```
+
+## 🛠️ Development
+
+This project uses a `Makefile` for common tasks:
+
+- `make install`: Install dependencies.
+- `make dev`: Run the server in watch mode.
+- `make test`: Send a test request to the local server.
+
+## 📂 Project Structure
+
+- `index.ts`: Main entry point and server logic.
+- `services/`: Provider-specific implementations (Gemini, Groq, Cerebras).
+- `types.ts`: Shared TypeScript interfaces.
