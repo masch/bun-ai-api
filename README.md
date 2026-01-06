@@ -73,3 +73,9 @@ This project uses a `Makefile` for common tasks:
 - `index.ts`: Main entry point and server logic.
 - `services/`: Provider-specific implementations (Gemini, Groq, Cerebras).
 - `types.ts`: Shared TypeScript interfaces.
+
+## 📝 TODO
+
+- [ ] Add healthcheck endpoint
+- [ ] Add API_KEY authentication
+
