@@ -60,6 +60,16 @@ curl -N -X POST http://localhost:3000/chat \
      -d '{"messages": [{"role": "user", "content": "Hello! Can you tell me your AI model name and version?"}]}'
 ```
 
+Example request using `make`:
+```bash
+make test
+```
+
+You can override the target API URL by passing it as an argument:
+```bash
+make test API_URL=https://your-proxy-server.com
+```
+
 ## 🛠️ Development
 
 This project uses a `Makefile` for common tasks:
@@ -76,6 +86,11 @@ This project uses a `Makefile` for common tasks:
 
 ## 📝 TODO
 
-- [ ] Add healthcheck endpoint
-- [ ] Add API_KEY authentication
+- [ ] Add healthcheck endpoint.
+- [ ] Add API_KEY authentication.
+- [x] Auto deploy on main branch push.
+- [x] Add Gemini AI service integration.
+- [x] Add Groq AI service integration.
+- [x] Add Cerebras AI service integration.
+- [x] Deploy on production.
 
