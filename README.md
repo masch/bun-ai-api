@@ -86,7 +86,7 @@ This project uses a `Makefile` for common tasks:
 
 ## 📝 TODO
 
-- [ ] Add healthcheck endpoint.
+- [x] Add healthcheck endpoint.
 - [ ] Add API_KEY authentication.
 - [x] Auto deploy on main branch push.
 - [x] Add Gemini AI service integration.

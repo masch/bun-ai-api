@@ -10,3 +10,6 @@ test:
 
 install:
 	bun install
+
+health:
+	curl -i $(API_URL)/health

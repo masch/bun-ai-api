@@ -2,6 +2,7 @@ import { groqServices } from "./services/groq";
 import { cerebrasServices } from "./services/cerebras";
 import { geminiServices } from "./services/gemini";
 import type { AIService, ChatMessage } from "./types";
+import { handleHealthCheck } from "./handlers/health";
 
 const services: AIService[] = [
     groqServices,
@@ -21,6 +22,10 @@ const server = Bun.serve({
     port: process.env.PORT ?? 3000,
     async fetch(req) {
         const { pathname } = new URL(req.url);
+
+        if (req.method === 'GET' && pathname === '/health') {
+            return handleHealthCheck();
+        }
 
         if (req.method !== 'POST' || pathname !== '/chat') {
             return new Response('Not Found', { status: 404 });
