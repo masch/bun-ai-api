@@ -12,4 +12,4 @@ install:
 	bun install
 
 health:
-	curl -i $(API_URL)/health
+	curl -i $(API_URL)/healthcheck

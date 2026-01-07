@@ -23,7 +23,7 @@ const server = Bun.serve({
     async fetch(req) {
         const { pathname } = new URL(req.url);
 
-        if (req.method === 'GET' && pathname === '/health') {
+        if (req.method === 'GET' && pathname === '/healthcheck') {
             return handleHealthCheck();
         }
 
