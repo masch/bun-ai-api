@@ -89,6 +89,7 @@ This project uses a `Makefile` for common tasks:
 - [ ] Add API_KEY authentication.
 - [x] Add unit test.
 - [x] Refactor to external handlers.
+- [x] Migrate to Hono router.
 - [x] Add healthcheck endpoint.
 - [x] Auto deploy on main branch push.
 - [x] Add Gemini AI service integration.

@@ -1,24 +1,27 @@
+import { Hono } from 'hono';
+import { logger } from 'hono/logger';
 import { handleHealthCheck } from "./handlers/health";
 import { handleChat } from "./handlers/chat";
+import { handleNotFound } from "./handlers/notfound";
 
-export const handler = async (req: Request) => {
-    const { pathname } = new URL(req.url);
+const app = new Hono();
 
-    if (req.method === 'GET' && pathname === '/healthcheck') {
-        return handleHealthCheck();
-    }
+// Add logger middleware for better visibility
+app.use('*', logger());
 
-    if (req.method === 'POST' && pathname === '/chat') {
-        return handleChat(req);
-    }
+// Health check endpoint
+app.get('/healthcheck', (c) => handleHealthCheck());
 
-    return new Response('Not Found', { status: 404 });
+// Chat endpoint
+app.post('/chat', (c) => handleChat(c.req.raw));
+
+// Fallback for 404
+app.notFound(handleNotFound);
+
+export default {
+    port: process.env.PORT ?? 3000,
+    fetch: app.fetch,
 };
 
-if (import.meta.main) {
-    const server = Bun.serve({
-        port: process.env.PORT ?? 3000,
-        fetch: handler,
-    });
-    console.log(`Listening on http://localhost:${server.port}`);
-}
+// Also export app for testing
+export { app };

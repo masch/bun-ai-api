@@ -21,7 +21,8 @@ mock.module("./services/gemini", () => ({
     }
 }));
 
-const { handler } = await import("./index");
+const { app } = await import("./index");
+const handler = (req: Request) => app.fetch(req);
 
 // Better to just spy on console
 const originalLog = console.log;
