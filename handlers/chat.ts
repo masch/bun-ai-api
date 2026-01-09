@@ -19,7 +19,7 @@ export async function handleChat(req: Request) {
     console.log(`Using service ${service?.name}`);
     const stream = await service?.chat(messages);
 
-    return new Response(stream as any, {
+    return new Response(stream as unknown as ReadableStream, {
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
