@@ -76,7 +76,12 @@ This project uses a `Makefile` for common tasks:
 
 - `make install`: Install dependencies.
 - `make dev`: Run the server in watch mode.
-- `make test`: Send a test request to the local server.
+- `make test`: Run unit tests.
+- `make test-integration`: Send a test request to the server.
+- `make health`: Check the server's health status.
+- `make lint`: Run the linter (Biome).
+- `make format`: Format the codebase.
+- `make check`: Run both linting and formatting.
 
 ## 📂 Project Structure
 
@@ -87,6 +92,7 @@ This project uses a `Makefile` for common tasks:
 ## 📝 TODO
 
 - [ ] Add API_KEY authentication.
+- [x] Add linter.
 - [x] Add unit test.
 - [x] Refactor to external handlers.
 - [x] Migrate to Hono router.
