@@ -1,8 +1,8 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
-import { handleHealthCheck } from "./handlers/health";
-import { handleChat } from "./handlers/chat";
-import { handleNotFound } from "./handlers/notfound";
+import { handleChat } from './handlers/chat';
+import { handleHealthCheck } from './handlers/health';
+import { handleNotFound } from './handlers/not-found';
 
 const app = new Hono();
 
@@ -10,7 +10,7 @@ const app = new Hono();
 app.use('*', logger());
 
 // Health check endpoint
-app.get('/healthcheck', (c) => handleHealthCheck());
+app.get('/healthcheck', () => handleHealthCheck());
 
 // Chat endpoint
 app.post('/chat', (c) => handleChat(c.req.raw));
@@ -19,8 +19,8 @@ app.post('/chat', (c) => handleChat(c.req.raw));
 app.notFound(handleNotFound);
 
 export default {
-    port: process.env.PORT ?? 3000,
-    fetch: app.fetch,
+  port: process.env.PORT ?? 3000,
+  fetch: app.fetch,
 };
 
 // Also export app for testing
