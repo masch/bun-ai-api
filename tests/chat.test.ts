@@ -1,34 +1,34 @@
 import { expect, test, describe, mock, beforeAll, afterAll } from "bun:test";
 
-mock.module("./services/groq", () => ({
+mock.module("../services/groq", () => ({
     groqServices: {
         name: "Mock Groq",
         chat: async () => (async function* () { yield "mock groq response"; })()
     }
 }));
 
-mock.module("./services/cerebras", () => ({
+mock.module("../services/cerebras", () => ({
     cerebrasServices: {
         name: "Mock Cerebras",
         chat: async () => (async function* () { yield "mock cerebras response"; })()
     }
 }));
 
-mock.module("./services/gemini", () => ({
+mock.module("../services/gemini", () => ({
     geminiServices: {
         name: "Mock Gemini",
         chat: async () => (async function* () { yield "mock gemini response"; })()
     }
 }));
 
-const { app } = await import("./index");
+const { app } = await import("../index");
 const handler = (req: Request) => app.fetch(req);
 
 // Better to just spy on console
 const originalLog = console.log;
 const originalError = console.error;
 
-describe("API Endpoints", () => {
+describe("Chat Endpoints", () => {
     beforeAll(() => {
         console.log = () => { };
         console.error = () => { };
@@ -37,27 +37,6 @@ describe("API Endpoints", () => {
     afterAll(() => {
         console.log = originalLog;
         console.error = originalError;
-    });
-
-    test("GET /healthcheck should return OK", async () => {
-        const req = new Request("http://localhost/healthcheck");
-        const res = await handler(req);
-        expect(res.status).toBe(200);
-        expect(await res.text()).toBe("OK");
-    });
-
-    test("GET /invalid-path should return 404", async () => {
-        const req = new Request("http://localhost/invalid-path");
-        const res = await handler(req);
-        expect(res.status).toBe(404);
-        expect(await res.text()).toBe("Not Found");
-    });
-
-    test("POST /invalid-path should return 404", async () => {
-        const req = new Request("http://localhost/invalid-path", { method: "POST" });
-        const res = await handler(req);
-        expect(res.status).toBe(404);
-        expect(await res.text()).toBe("Not Found");
     });
 
     test("POST /chat with empty body should return 400", async () => {
@@ -79,7 +58,6 @@ describe("API Endpoints", () => {
     });
 
     test("POST /chat should return a stream from service", async () => {
-        // We expect the first service (Groq) to be used first
         const req = new Request("http://localhost/chat", {
             method: "POST",
             body: JSON.stringify({ messages: [{ role: "user", content: "hi" }] }),
@@ -90,7 +68,6 @@ describe("API Endpoints", () => {
         expect(res.status).toBe(200);
         expect(res.headers.get("Content-Type")).toBe("text/event-stream");
 
-        // Read the stream
         const reader = res.body?.getReader();
         if (!reader) throw new Error("No reader");
 
@@ -106,9 +83,6 @@ describe("API Endpoints", () => {
     });
 
     test("POST /chat should rotate through services", async () => {
-        // We already used Groq in the previous test, so next should be Cerebras if state is shared
-        // or Groq if it's a new load. Since we imported once, state is likely shared.
-
         const callChat = async () => {
             const req = new Request("http://localhost/chat", {
                 method: "POST",
@@ -127,14 +101,17 @@ describe("API Endpoints", () => {
             return result;
         };
 
-        // Assuming we start back at index 0 or continue from 1.
-        // Let's just check if it changes.
+        // Note: Since this is a separate test file, the service rotation index 
+        // will start fresh if the app instance is fresh or the services module is fresh.
+        // However, if Bun caches the imported app across tests, it might be different.
+        // In Bun, each test file usually runs in its own environment.
+
+        const res1 = await callChat();
         const res2 = await callChat();
         const res3 = await callChat();
         const res4 = await callChat();
 
-        // The order should be: Groq (used in prev test), Cerebras, Gemini, Groq...
-        // Current test output showed "Mock Groq" for the previous test.
+        expect(res1).toBe("mock groq response");
         expect(res2).toBe("mock cerebras response");
         expect(res3).toBe("mock gemini response");
         expect(res4).toBe("mock groq response");
