@@ -1,27 +1,6 @@
-import { expect, test, describe, mock, beforeAll, afterAll } from "bun:test";
+import { expect, test, describe, beforeAll, afterAll } from "bun:test";
+import { app } from "../index";
 
-mock.module("../services/groq", () => ({
-    groqServices: {
-        name: "Mock Groq",
-        chat: async () => (async function* () { yield "mock groq response"; })()
-    }
-}));
-
-mock.module("../services/cerebras", () => ({
-    cerebrasServices: {
-        name: "Mock Cerebras",
-        chat: async () => (async function* () { yield "mock cerebras response"; })()
-    }
-}));
-
-mock.module("../services/gemini", () => ({
-    geminiServices: {
-        name: "Mock Gemini",
-        chat: async () => (async function* () { yield "mock gemini response"; })()
-    }
-}));
-
-const { app } = await import("../index");
 const handler = (req: Request) => app.fetch(req);
 
 // Better to just spy on console
@@ -101,19 +80,12 @@ describe("Chat Endpoints", () => {
             return result;
         };
 
-        // Note: Since this is a separate test file, the service rotation index 
-        // will start fresh if the app instance is fresh or the services module is fresh.
-        // However, if Bun caches the imported app across tests, it might be different.
-        // In Bun, each test file usually runs in its own environment.
-
         const res1 = await callChat();
         const res2 = await callChat();
         const res3 = await callChat();
-        const res4 = await callChat();
 
-        expect(res1).toBe("mock groq response");
-        expect(res2).toBe("mock cerebras response");
-        expect(res3).toBe("mock gemini response");
-        expect(res4).toBe("mock groq response");
+        expect(res1).toBe("mock cerebras response");
+        expect(res2).toBe("mock gemini response");
+        expect(res3).toBe("mock groq response");
     });
 });

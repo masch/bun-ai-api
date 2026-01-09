@@ -4,6 +4,9 @@ dev:
 	bun --watch run index.ts
 
 test:
+	bun test
+
+test-integration:
 	curl -N -X POST $(API_URL)/chat \
 		 -H "Content-Type: application/json" \
 		 -d '{"messages": [{"role": "user", "content": "Hello! Can you tell me your AI model name and version?"}]}'
